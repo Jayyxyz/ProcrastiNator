@@ -6,7 +6,7 @@ export default function Home(){
     return (
     <SafeAreaView>
         <View style={style.container}>
-             <Text>dsd</Text>
+             <Text>Procrastinator</Text>
         </View>
     </SafeAreaView>
     )
