@@ -1,17 +1,18 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import Home from './src/components/home/home';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { StatusBar } from "expo-status-bar";
+import { StyleSheet, View } from "react-native";
+import React from "react";
+import Login from "./src/components/screens/login";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 export default function App() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-    <View style={styles.container}>
-      <Home/>
-      
-    </View>
-    </SafeAreaView>
+        <StatusBar />
+        <View style={styles.componentContainer}>
+          <Login />
+        </View>
+      </SafeAreaView>
     </SafeAreaProvider>
   );
 }
@@ -19,8 +20,10 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'red',
-    alignItems: 'center',
-    justifyContent: 'center',
+  },
+  componentContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "flex-start",
   },
 });
