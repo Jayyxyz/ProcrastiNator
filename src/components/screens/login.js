@@ -1,44 +1,41 @@
-import React, {useState} from "react";
-import { View, StyleSheet, Alert, Image} from "react-native";
-import { TextInput, Button, Text, Checkbox, Provider as PaperProvider, DefaultTheme} from "react-native-paper";
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import React, { useState } from "react";
+import { View, StyleSheet, Alert, Image } from "react-native";
+import { TextInput, Button, Text, Checkbox, Provider as PaperProvider, ActivityIndicator } from "react-native-paper";
+import { useNavigation } from "@react-navigation/native";
 
+export default function Login() {
+  const navigation = useNavigation();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [loading, setLoading] = useState(false); // Loading state
 
-export default function Login(){
-    
-    //This is the state for holding user input
-    const [email, setEmail] = useState('');
-    const [password, setPassword] =useState('');
-    const [passwordVisible, setPasswordVisible] = useState(false);
-
-      // Placeholder function for handling login - add backend logic here later
   const handleLogin = () => {
-    // Comment: This is where you would add the code to connect to your backend (e.g., Firebase authentication)
-    // Example of backend code you might add later:
-    // firebase.auth().signInWithEmailAndPassword(email, password)
-    // .then((userCredential) => {
-    //   // Successfully logged in
-    //   const user = userCredential.user;
-    // })
-    // .catch((error) => {
-    //   // Handle error (e.g., invalid credentials)
-    //   console.error("Login failed", error.message);
-    // });
-    
-    // Placeholder feedback for now
     Alert.alert("Login attempted", `Email: ${email}, Password: ${password}`);
   };
 
-    return(
-        <PaperProvider>
-        <View style={styles.container}>
-         <Image source={require('../../../assets/Logo.png')} style={styles.logo}/>
-         
+  const handleSignUpPress = () => {
+    setLoading(true); // Start loading
+    setTimeout(() => {
+      setLoading(false); // Stop loading
+      navigation.navigate("SignUp"); // Navigate to SignUp screen
+    }, 2000); // Delay for 2 seconds to simulate loading effect
+  };
 
-         {/* Login Form */}
-         <View style={styles.form}>
-            {/* Email Input */}
-            <Text style={{fontWeight: 'bold', fontSize: 16, marginBottom: 8}}> Email</Text>
+  return (
+    <PaperProvider>
+      <View style={styles.container}>
+        <Image source={require('../../../assets/Logo.png')} style={styles.logo} />
+        
+        {loading ? ( // Show loading spinner if loading state is true
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator animating={true} size="large" color="#26f5f5" />
+            <Text style={styles.loadingText}>Loading...</Text>
+          </View>
+        ) : (
+          
+          <View style={styles.form}>
+            <Text style={{ fontWeight: 'bold', fontSize: 16, marginBottom: 8 }}>Email</Text>
             <TextInput
               placeholder="Email"
               value={email}
@@ -50,8 +47,7 @@ export default function Login(){
               activeOutlineColor="#1a4056"
               mode="outlined"
             />
-            {/* Password Form */}
-            <Text style={{fontWeight: 'bold', fontSize: 16, marginBottom: 8}}> Password</Text>
+            <Text style={{ fontWeight: 'bold', fontSize: 16, marginBottom: 8 }}>Password</Text>
             <TextInput
               placeholder="Password"
               value={password}
@@ -63,108 +59,102 @@ export default function Login(){
               mode="outlined"
               right={
                 <TextInput.Icon
-                name={passwordVisible ? 'eye-off' : 'eye'} // Change icon based on visibility state
-                onPress={() => setPasswordVisible(!passwordVisible)} // Toggle password visibility
-                color="black" // Change color to fit your design
+                  name={passwordVisible ? 'eye-off' : 'eye'}
+                  onPress={() => setPasswordVisible(!passwordVisible)}
+                  color="black"
                 />
               }
             />
-            {/* Remember Me Checkbox and Forgot Password Link */}
             <View style={styles.checkboxContainer}>
-                <Checkbox/>
-                <Text style={styles.checkboxText}>Remember Me</Text>
-
-                <Button mode="text" style={styles.forgotPasswordButton} textColor="#1a4056">Forgot Password?</Button>
+              <Checkbox />
+              <Text style={styles.checkboxText}>Remember Me</Text>
+              <Button mode="text" style={styles.forgotPasswordButton} textColor="#1a4056">Forgot Password?</Button>
             </View>
-
-
-            {/* Login Button */}
             <Button
-            mode="contained"
-            onPress={handleLogin}
-            style={styles.button}
-            contentStyle={styles.buttonContent}
+              mode="contained"
+              onPress={handleLogin}
+              style={styles.button}
+              contentStyle={styles.buttonContent}
             >
-            Login
+              Login
             </Button>
-
-            {/* Don't have an account? Sign up Link */}
             <View style={styles.signupContainer}>
-                <Text style={styles.signupText}>Don't have an account?</Text>
-                <Button mode="text" style={styles.signupButton}>Sign Up</Button>
+              <Text style={styles.signupText}>Don't have an account?</Text>
+              <Button 
+                mode="text" 
+                style={styles.signupButton} 
+                onPress={handleSignUpPress}
+              >
+                Sign Up
+              </Button>
             </View>
+          </View>
+        )}
+      </View>
+    </PaperProvider>
+  );
+}
 
-
-            
-         </View>
-
-        </View>
-        </PaperProvider>
-    );
-};
-   const styles = StyleSheet.create({
-    
-    
-    
-    container: {
-        flex: 1,
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        
-      },
-      headerText: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 30,
-      },
-      form: {
-        width: 300,
-      },
-      input: {
-        marginBottom: 15,
-      },
-      button: {
-        marginTop: 20,
-        borderRadius: 5,
-        backgroundColor: '#26f5f5'
-      },
-      buttonContent: {
-        paddingVertical: 8,
-      },
-      logo: {
-        width: '100%',
-        height: '30%',
-        marginTop: 30,
-        marginBottom: 30
-      },
-      checkboxContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 20,
-      },
-      checkboxText: {
-        marginLeft: 1,
-        fontSize: 12,
-        fontWeight: 'bold'
-      },
-      forgotPasswordButton: {
-        marginLeft: 'auto',
-          // Push the button to the right
-      },
-      forgotPasswordText:{
-        color: '#1a4056'
-      },
-      signupContainer: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 30,
-      },
-      signupText: {
-        fontSize: 14,
-        color: 'black',
-      },
-      signupButton: {
-        marginLeft: 1,
-    },
-   })
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  form: {
+    width: 300,
+  },
+  input: {
+    marginBottom: 15,
+  },
+  button: {
+    marginTop: 20,
+    borderRadius: 5,
+    backgroundColor: '#26f5f5'
+  },
+  buttonContent: {
+    paddingVertical: 8,
+  },
+  logo: {
+    width: '70%',
+    height: '30%',
+    marginTop: 50,
+    marginBottom: 10
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  checkboxText: {
+    marginLeft: 1,
+    fontSize: 12,
+    fontWeight: 'bold'
+  },
+  forgotPasswordButton: {
+    marginLeft: 'auto',
+  },
+  signupContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 30,
+  },
+  signupText: {
+    fontSize: 14,
+    color: 'black',
+  },
+  signupButton: {
+    marginLeft: 1,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#26f5f5',
+  },
+});

@@ -3,25 +3,40 @@ import { StyleSheet, View } from "react-native";
 import React, { useState, useEffect } from "react";
 import Login from "./src/components/screens/login";
 import LoadingScreen from "./src/components/screens/loading";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import SignUp from "./src/components/screens/sign-up";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+
+const Stack = createStackNavigator();
 
 export default function App() {
-  const [showLoading, setShowLoading] = useState(true); // State to control loading screen visibility
+  const [showLoading, setShowLoading] = useState(true);
 
   useEffect(() => {
-    // Set a timeout to hide the loading screen after 5 seconds
     const timer = setTimeout(() => setShowLoading(false), 7500);
-    return () => clearTimeout(timer); // Cleanup timer on component unmount
+    return () => clearTimeout(timer);
   }, []);
+
+  if (showLoading) {
+    return (
+      <SafeAreaProvider>
+        <View style={styles.container}>
+          <LoadingScreen />
+        </View>
+      </SafeAreaProvider>
+    );
+  }
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
-        <StatusBar />
-        <View style={styles.componentContainer}>
-          {showLoading ? <LoadingScreen /> : <Login />}
-        </View>
-      </SafeAreaView>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="SignUp" component={SignUp} />
+        </Stack.Navigator>
+      </NavigationContainer>
+      <StatusBar />
     </SafeAreaProvider>
   );
 }
@@ -29,10 +44,5 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  componentContainer: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-start",
   },
 });
