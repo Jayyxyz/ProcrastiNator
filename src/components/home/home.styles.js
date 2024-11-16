@@ -1,15 +1,35 @@
 import { StyleSheet } from 'react-native';
+import { IconButton } from 'react-native-paper';
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#F5F5F5',  // Example background color
-  },
+  
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
+    width: '100%'
+    
   },
+  header: {
+    width: '100%',
+    height: 55,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-end',
+    paddingHorizontal: 10,
+    backgroundColor: 'e0e0e0'
+  },
+  IconButton: {
+    marginRight: 0,
+    
+  },
+  toDo: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    width: '100%'
+  },
+  
+
 });
 
 export default styles;
