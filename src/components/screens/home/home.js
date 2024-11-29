@@ -1,7 +1,9 @@
 import { Text, View, TouchableOpacity } from "react-native";
-import styles from "./home.styles";
+import styles from "../home/home.styles"
 import { PaperProvider, IconButton } from "react-native-paper";
-import TaskScheduler from "../taskScheduler/taskScheduler";
+import NavBar from "../../navigation/navbar";
+import MotivationalPage from "../../pages/motivationPage";
+
 
 
 export default function Home() {
@@ -14,7 +16,11 @@ export default function Home() {
         </View>
 
         <View style={styles.toDo}>
-            <TaskScheduler/>
+            <MotivationalPage />
+        </View>
+
+        <View style={styles.navBar}>
+          <NavBar/>
         </View>
       </View>
     </PaperProvider>

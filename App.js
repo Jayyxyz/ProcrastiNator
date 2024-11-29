@@ -7,7 +7,7 @@ import SignUp from "./src/components/screens/sign-up";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import Home from "./src/components/home/home";
+import Home from "./src/components/screens/home/home";
 
 const Stack = createStackNavigator();
 

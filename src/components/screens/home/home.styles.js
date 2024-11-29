@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { IconButton } from 'react-native-paper';
+import Navbar from "../../navigation/navbar"
 
 const styles = StyleSheet.create({
   
@@ -28,6 +29,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: '100%'
   },
+  navBar: {
+   
+  }
   
 
 });
