@@ -11,14 +11,15 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.1,
     shadowRadius: 10,
-    elevation: 5,                 // Shadow for Android
+    elevation: 10,                 // Shadow for Android
   },
   title: {
     marginTop: 10,
     fontSize: 18,
     fontWeight: "600",
-    textAlign: "center",
+    textAlign: "left",
     color: "white",
+    marginBottom: 15
   },
   videoContainer: {
     borderRadius: 10,
@@ -50,6 +51,15 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
   },
+  summary: {
+    marginTop: 15,
+    fontSize: 14,
+    color: "white",
+    marginBottom: 10,
+    textAlign: "left", // Align to match the title
+    padding: 5
+  },
+  
 });
 
 export default styles;

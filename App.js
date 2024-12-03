@@ -8,6 +8,7 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Home from "./src/components/screens/home/home";
+import TaskScheduler from "./src/components/taskScheduler/taskScheduler";
 
 const Stack = createStackNavigator();
 
@@ -39,6 +40,7 @@ export default function App() {
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="SignUp" component={SignUp} />
           <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="TaskScheduler" component={TaskScheduler} />
         </Stack.Navigator>
       </NavigationContainer>
       <StatusBar />

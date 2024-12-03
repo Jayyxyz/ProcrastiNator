@@ -35,13 +35,13 @@ const styles = StyleSheet.create({
 
     quoteCard: {
         width: '50%',
-        padding: 5, // Add some space between cards
+         // Add some space between cards
     },
 
     qouteContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        justifyContent: 'space-between',
+        
     },
 
     videoCard: {

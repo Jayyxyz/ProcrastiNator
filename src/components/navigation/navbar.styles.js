@@ -26,13 +26,15 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     alignSelf: "center",
-    marginBottom: 70, // Adjust to place above the "view-grid" icon
+    flexDirection: 'row',
+    flexWrap: "wrap",
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 70, 
     backgroundColor: "white",
     width: '100%',
-    height: '25%',
-    borderTopRightRadius: 180,
-    borderTopLeftRadius: 180,
-    padding: 50,
+    height: '35%',
+    padding: 60,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
@@ -44,6 +46,13 @@ const styles = StyleSheet.create({
   modalContent: {
     flexDirection: "row",
     justifyContent: "space-around",
+  },
+  icon: {
+    width: 60, // Adjust size as needed
+    height: 60,
+    resizeMode: "contain",
+    
+    marginBottom: 30
   },
 });
 

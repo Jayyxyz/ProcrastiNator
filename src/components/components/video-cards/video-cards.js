@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 import YoutubeIframe from "react-native-youtube-iframe";
 import styles from "./styles";
 
-const VideoCard = ({ title, videoId }) => {
+const VideoCard = ({ title, videoId, summary }) => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   // Replace with a custom thumbnail if desired
@@ -45,6 +45,7 @@ const VideoCard = ({ title, videoId }) => {
           />
         )}
       </View>
+      <Text style={styles.summary}>{summary}</Text>
     </View>
   );
 };

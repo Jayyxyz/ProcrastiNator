@@ -13,6 +13,7 @@ import { CheckBox } from "react-native-elements";
 import styles from "./styles";
 import Icon from "react-native-vector-icons/FontAwesome";
 import CalendarPicker from "react-native-calendar-picker";
+import NavBar from "../navigation/navbar";
 
 const TaskScheduler = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -356,6 +357,7 @@ const TaskScheduler = () => {
           </View>
         </View>
       </Modal>
+      <NavBar/>
     </View>
   );
 };

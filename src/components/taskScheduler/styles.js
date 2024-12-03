@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     marginLeft: 20
   },
   task: {
-    height: '70%',
+    height: '63%',
     width: '100%',
     borderTopStartRadius: 35,
     borderTopEndRadius: 35,
