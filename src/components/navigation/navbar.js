@@ -12,8 +12,8 @@ export default function NavBar() {
     setIsModalVisible(!isModalVisible);
   };
   const handleNavigation = (route) => {
-    setIsModalVisible(false); // Close the modal
-    navigation.navigate(route); // Navigate to the specified route
+    setIsModalVisible(false); 
+    navigation.navigate(route); 
   };
 
   return (
