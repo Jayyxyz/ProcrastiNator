@@ -1,36 +1,66 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Alert } from "react-native";
-import {
-  TextInput,
-  Button,
-  Text,
-  Checkbox,
-  Provider as PaperProvider,
-} from "react-native-paper";
+import { TextInput, Button, Text, Checkbox, Provider as PaperProvider } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import TermsAndConditionsModal from "./terms-and-condition.Modal";// Import the modal
+import { supabase } from "../../lib/supabase";
 
 export default function SignUp() {
   const navigation = useNavigation();
-  
-  // State for handling user input
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [modalVisible, setModalVisible] = useState(false); // State for modal visibility
+  const [loading, setLoading] = React.useState(false);
+  const [errors, setErrors] = React.useState({});
 
-  // Placeholder function for handling sign up - add backend logic here later
-  const handleSignUp = () => {
-    if (password !== confirmPassword) {
-      Alert.alert("Error", "Passwords do not match");
-      return;
+  const register = async () => {
+    try {
+      setLoading(true);
+
+      if(!name){
+        throw new Error('Name is required');
+      }
+
+      if(!email){
+        throw new Error('Email is required');
+      }
+
+      if(!password){
+        throw new Error('Password is required');
+      }
+
+      if(!confirmPassword){
+        throw new Error('Confirm Password is required');
+      }
+
+      if(password !== confirmPassword){
+        throw new Error('Password does not match');
+      }
+
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+            data: { display_name: name }
+        }
+      });
+
+      if(!error){
+        Alert.alert('Success', 'Account created successfully', [{text: 'OK'}]); 
+        navigation.navigate('Login');
+    }else{
+        throw error;
     }
 
-    // Placeholder feedback for now
-    Alert.alert("Sign up attempted", `Name: ${name}, Email: ${email}`);
+    } catch (error){
+      Alert.alert('Error', error.message, [{text: 'OK'}]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleAcceptTerms = () => {
@@ -57,6 +87,7 @@ export default function SignUp() {
             activeOutlineColor="#1a4056"
             mode="outlined"
           />
+          {errors.name && <Text style={styles.error}>{errors.name}</Text>}
 
           {/* Email Input */}
           <Text style={styles.label}>Email</Text>
@@ -71,6 +102,7 @@ export default function SignUp() {
             activeOutlineColor="#1a4056"
             mode="outlined"
           />
+          {errors.email && <Text style={styles.error}>{errors.email}</Text>}
 
           {/* Password Input */}
           <Text style={styles.label}>Password</Text>
@@ -91,6 +123,7 @@ export default function SignUp() {
               />
             }
           />
+          {errors.password && <Text style={styles.error}>{errors.password}</Text>}
 
           {/* Confirm Password Input */}
           <Text style={styles.label}>Confirm Password</Text>
@@ -111,6 +144,7 @@ export default function SignUp() {
               />
             }
           />
+          {errors.confirmPassword && <Text style={styles.error}>{errors.confirmPassword}</Text>}
 
           {/* Terms and Conditions Checkbox and Link to Modal */}
           <View style={styles.checkboxContainer}>
@@ -128,22 +162,13 @@ export default function SignUp() {
           </View>
 
           {/* Sign Up Button */}
-          <Button
-            mode="contained"
-            onPress={handleSignUp}
-            disabled={!termsAccepted} // Disable button if terms not accepted
-            style={styles.button}
-            contentStyle={styles.buttonContent}
-          >
-            Sign Up
-          </Button>
+          <Button loading={loading} mode="contained" onPress={register} disabled={!termsAccepted} style={styles.button} contentStyle={styles.buttonContent}>Sign Up</Button>
+          {errors.general && <Text style={styles.error}>{errors.general}</Text>}
 
           {/* Already have an account? Login Link */}
           <View style={styles.loginContainer}>
             <Text style={styles.loginText}>Already have an account?</Text>
-            <Button mode="text" style={styles.loginButton} onPress={() => navigation.navigate("Login")}>
-              Log In
-            </Button>
+            <Button mode="text" style={styles.loginButton} onPress={() => navigation.navigate("Login")}>Log In</Button>
           </View>
         </View>
 
@@ -209,5 +234,9 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     marginLeft: 5,
+  },
+  error: {
+    color: 'red',
+    marginBottom: 10,
   },
 });
