@@ -56,7 +56,7 @@ export default function NavBar() {
                 />
               </TouchableOpacity>
               
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => handleNavigation("Pomodoro")}>
                 <Image
                   source={require("../../../assets/pomodoro.png")}
                   style={styles.icon}
