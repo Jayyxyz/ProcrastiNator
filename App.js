@@ -3,24 +3,49 @@ import { StyleSheet, View } from "react-native";
 import React, { useState, useEffect } from "react";
 import Login from "./src/components/screens/login";
 import LoadingScreen from "./src/components/screens/loading";
+import SignUp from "./src/components/screens/sign-up";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import Home from "./src/components/screens/home/home";
+import TaskScheduler from "./src/components/taskScheduler/taskScheduler";
+import Pomodoro from "./src/components/components/pomodoro/pomodoro";
+
+const Stack = createStackNavigator();
 
 export default function App() {
-  const [showLoading, setShowLoading] = useState(true); // State to control loading screen visibility
+  const [showLoading, setShowLoading] = useState(true);
 
   useEffect(() => {
-    // Set a timeout to hide the loading screen after 5 seconds
     const timer = setTimeout(() => setShowLoading(false), 7500);
-    return () => clearTimeout(timer); // Cleanup timer on component unmount
+    return () => clearTimeout(timer);
   }, []);
+
+  if (showLoading) {
+    return (
+      <SafeAreaProvider>
+        <SafeAreaView style={styles.container}>
+        <View >
+          <LoadingScreen />
+        </View>
+        </SafeAreaView>
+      </SafeAreaProvider>
+    );
+  }
 
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-        <StatusBar />
-        <View style={styles.componentContainer}>
-          {showLoading ? <LoadingScreen /> : <Login />}
-        </View>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="SignUp" component={SignUp} />
+          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="TaskScheduler" component={TaskScheduler} />
+          <Stack.Screen name="Pomodoro" component={Pomodoro} />
+        </Stack.Navigator>
+      </NavigationContainer>
+      <StatusBar />
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -29,10 +54,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  componentContainer: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-start",
+    
   },
 });
