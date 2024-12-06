@@ -11,7 +11,11 @@ export default function Login() {
   const [loading, setLoading] = useState(false); // Loading state
 
   const handleLogin = () => {
-    Alert.alert("Login attempted", `Email: ${email}, Password: ${password}`);
+    setLoading(true); // Start loading
+    setTimeout(() => {
+      setLoading(false); // Stop loading
+      navigation.navigate("Home"); // Navigate to SignUp screen
+    }, 2000); // Delay for 2 seconds to simulate loading effect
   };
 
   const handleSignUpPress = () => {
