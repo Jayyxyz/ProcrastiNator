@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Switch } from 'react-native';
+import { Text, View, TouchableOpacity, Switch } from 'react-native';
 import Count from './count';
 import NavBar from '../../navigation/navbar';
+import styles from './styles'; // Import styles from the separate file
 
 const CONSTANTS = {
   POMODORO_TIME: 25,
@@ -16,19 +17,21 @@ export default function Pomodoro() {
   const [completedSessions, setCompletedSessions] = useState(0);
   const [darkMode, setDarkMode] = useState(false);
   const [initialDate, setInitialDate] = useState(CONSTANTS.POMODORO_TIME * 60 * 1000);
+  const [selectedTimer, setSelectedTimer] = useState('pomodoro');
 
   const switchTypeTimer = (type) => {
     if (!play) {
+      setSelectedTimer(type);
       switch (type) {
-        case "pomodoro":
+        case 'pomodoro':
           setMaxTime(CONSTANTS.POMODORO_TIME);
           setInitialDate(CONSTANTS.POMODORO_TIME * 60 * 1000);
           break;
-        case "shortbreak":
+        case 'shortbreak':
           setMaxTime(CONSTANTS.SHORTBREAK_TIME);
           setInitialDate(CONSTANTS.SHORTBREAK_TIME * 60 * 1000);
           break;
-        case "longbreak":
+        case 'longbreak':
           setMaxTime(CONSTANTS.LONGBREAK_TIME);
           setInitialDate(CONSTANTS.LONGBREAK_TIME * 60 * 1000);
           break;
@@ -53,9 +56,9 @@ export default function Pomodoro() {
   const completeSession = () => {
     setCompletedSessions((prev) => prev + 1);
     if (completedSessions % 4 === 0) {
-      switchTypeTimer("longbreak");
+      switchTypeTimer('longbreak');
     } else {
-      switchTypeTimer("shortbreak");
+      switchTypeTimer('shortbreak');
     }
     setPlay(false);
     setReset(true);
@@ -63,34 +66,53 @@ export default function Pomodoro() {
 
   const toggleDarkMode = () => setDarkMode((prev) => !prev);
 
+  const isSelected = (type) => selectedTimer === type;
+
   return (
     <View style={[styles.container, darkMode && styles.darkContainer]}>
       <View style={styles.topBar}>
         <Text style={[styles.title, darkMode && styles.darkTitle]}>Pomodoro</Text>
         <View style={styles.darkModeToggle}>
-          <Text style={[styles.toggleText, darkMode && styles.darkToggleText]}></Text>
           <Switch value={darkMode} onValueChange={toggleDarkMode} />
         </View>
       </View>
-      <View style={styles.timerContainer}>
+      <View style={[styles.timerContainer, darkMode && styles.darkTimerContainer]}>
         <View style={styles.buttonsRow}>
           <TouchableOpacity
-            style={[styles.modeButton, { backgroundColor: '#FF6F61' }]}
+            style={[
+              styles.modeButton,
+              isSelected('pomodoro') && styles.highlightedModeButton,
+              darkMode && isSelected('pomodoro') && styles.darkHighlightedModeButton,
+            ]}
             onPress={() => switchTypeTimer('pomodoro')}
           >
-            <Text style={[styles.modeText, darkMode && styles.darkModeText]}>Pomodoro</Text>
+            <Text style={[styles.modeText, isSelected('pomodoro') && styles.highlightedModeText]}>
+              Pomodoro
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.modeButton, { backgroundColor: '#FFA177' }]}
+            style={[
+              styles.modeButton,
+              isSelected('shortbreak') && styles.highlightedModeButton,
+              darkMode && isSelected('shortbreak') && styles.darkHighlightedModeButton,
+            ]}
             onPress={() => switchTypeTimer('shortbreak')}
           >
-            <Text style={[styles.modeText, darkMode && styles.darkModeText]}>Short Break</Text>
+            <Text style={[styles.modeText, isSelected('shortbreak') && styles.highlightedModeText]}>
+              Short Break
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.modeButton, { backgroundColor: '#6D9EEB' }]}
+            style={[
+              styles.modeButton,
+              isSelected('longbreak') && styles.highlightedModeButton,
+              darkMode && isSelected('longbreak') && styles.darkHighlightedModeButton,
+            ]}
             onPress={() => switchTypeTimer('longbreak')}
           >
-            <Text style={[styles.modeText, darkMode && styles.darkModeText]}>Long Break</Text>
+            <Text style={[styles.modeText, isSelected('longbreak') && styles.highlightedModeText]}>
+              Long Break
+            </Text>
           </TouchableOpacity>
         </View>
         <Count
@@ -101,119 +123,24 @@ export default function Pomodoro() {
           completeSession={completeSession}
         />
         <View style={styles.controlButtons}>
-          <TouchableOpacity style={[styles.startButton, { backgroundColor: '#5CB85C' }]} onPress={startControl}>
+          <TouchableOpacity
+            style={[styles.startButton, darkMode && styles.darkButton]}
+            onPress={startControl}
+          >
             <Text style={[styles.startButtonText, darkMode && styles.darkStartButtonText]}>START</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.resetButton, { backgroundColor: '#D9534F' }]} onPress={resetControl}>
-            <Text style={[styles.resetButtonText, darkMode && styles.darkResetButtonText]}>RESET</Text>
+          <TouchableOpacity
+            style={[styles.startButton, darkMode && styles.darkButton]}
+            onPress={resetControl}
+          >
+            <Text style={[styles.startButtonText, darkMode && styles.darkStartButtonText]}>RESET</Text>
           </TouchableOpacity>
         </View>
       </View>
       <Text style={[styles.footerText, darkMode && styles.darkFooterText]}>
         Completed Sessions: {completedSessions}
       </Text>
-      <NavBar/>
+      <NavBar />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F9E4D4',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-
-  },
-  darkContainer: {
-    backgroundColor: '#2C2C2C',
-  },
-  topBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '90%',
-  },
-  title: {
-    fontSize: 36,
-    fontWeight: 'bold',
-    color: '#FF6F61',
-    marginTop: 10
-  },
-  darkTitle: {
-    color: '#FFAB91',
-  },
-  timerContainer: {
-    width: '90%',
-    backgroundColor: '#FFD3B6',
-    borderRadius: 20,
-    padding: 10,
-    alignItems: 'center',
-    
-  },
-  buttonsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
-    marginBottom: 20,
-  },
-  modeButton: {
-    padding: 8,
-    borderRadius: 10,
-    elevation: 2,
-  },
-  modeText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  darkModeText: {
-    color: '#333333',
-  },
-  controlButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
-    marginTop: 20,
-  },
-  startButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 25,
-    borderRadius: 10,
-  },
-  startButtonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-  },
-  resetButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 25,
-    borderRadius: 10,
-  },
-  resetButtonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-  },
-  footerText: {
-    color: '#6D9EEB',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  darkFooterText: {
-    color: '#AAAAAA',
-  },
-  darkModeToggle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  toggleText: {
-    marginRight: 5,
-    fontSize: 14,
-    color: '#333333',
-  },
-  darkToggleText: {
-    color: '#FFFFFF',
-  },
-});
