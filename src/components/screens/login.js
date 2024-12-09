@@ -11,7 +11,7 @@ export default function Login() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false); // Loading state
 
-    const login = async () => {
+  const login = async () => {
     try {
       setLoading(true);
 
@@ -52,14 +52,10 @@ export default function Login() {
   }
 
   const handleSignUpPress = () => {
-    setLoading(true); // Start loading
-    setTimeout(() => {
-      setLoading(false); // Stop loading
-      // Clear the text fields when navigating to SignUp
-      setEmail('');
-      setPassword('');
-      navigation.navigate("SignUp"); // Navigate to SignUp screen
-    }, 2000); // Delay for 2 seconds to simulate loading effect
+    // Clear the text fields when navigating to SignUp
+    setEmail('');
+    setPassword('');
+    navigation.navigate("SignUp"); // Navigate to SignUp screen
   };
 
   const handleForgotPasswordPress = () => {

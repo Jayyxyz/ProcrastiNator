@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, StyleSheet, Alert } from "react-native";
 import { TextInput, Button, Text, Checkbox, Provider as PaperProvider } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
-import TermsAndConditionsModal from "./terms-and-condition.Modal";// Import the modal
+import TermsAndConditionsModal from "./terms-and-condition.Modal";
 import { supabase } from "../../lib/supabase";
 
 export default function SignUp() {
@@ -13,59 +13,114 @@ export default function SignUp() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false); // State for modal visibility
-  const [loading, setLoading] = React.useState(false);
-  const [errors, setErrors] = React.useState({});
+  const [modalVisible, setModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const register = async () => {
-    try {
-      setLoading(true);
-
-      if(!name){
-        throw new Error('Name is required');
-      }
-
-      if(!email){
-        throw new Error('Email is required');
-      }
-
-      if(!password){
-        throw new Error('Password is required');
-      }
-
-      if(!confirmPassword){
-        throw new Error('Confirm Password is required');
-      }
-
-      if(password !== confirmPassword){
-        throw new Error('Password does not match');
-      }
-
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-            data: { display_name: name }
-        }
-      });
-
-      if(!error){
-        Alert.alert('Success', 'Account created successfully', [{text: 'OK'}]); 
-        navigation.navigate('Login');
-    }else{
-        throw error;
+  // Comprehensive validation function with alerts
+  const validateForm = () => {
+    // Name validation
+    if (!name.trim()) {
+      Alert.alert('Error', 'Name is required');
+      return false;
     }
 
-    } catch (error){
-      Alert.alert('Error', error.message, [{text: 'OK'}]);
-    } finally {
-      setLoading(false);
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email.trim()) {
+      Alert.alert('Error', 'Email is required');
+      return false;
+    } else if (!emailRegex.test(email)) {
+      Alert.alert('Error', 'Invalid email format');
+      return false;
     }
+
+    // Password validation
+    if (!password) {
+      Alert.alert('Error', 'Password is required');
+      return false;
+    } else if (password.length < 4) {
+      Alert.alert('Error', 'Password must be at least 4 characters long');
+      return false;
+    }
+
+    // Confirm password validation
+    if (!confirmPassword) {
+      Alert.alert('Error', 'Please confirm your password');
+      return false;
+    } else if (password !== confirmPassword) {
+      Alert.alert('Error', 'Passwords do not match');
+      return false;
+    }
+
+    // Terms and conditions
+    if (!termsAccepted) {
+      Alert.alert('Error', 'You must accept the terms and conditions');
+      return false;
+    }
+
+    return true;
   };
 
+  // Handle accepting terms and conditions
   const handleAcceptTerms = () => {
     setTermsAccepted(true);
     setModalVisible(false);
+  };
+
+  // Registration logic
+  const register = async () => {
+    // Validate form before submission
+    if (!validateForm()) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      // Sign up the user
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { 
+            display_name: name.trim() 
+          }
+        }
+      });
+
+      if (signUpError) {
+        throw signUpError;
+      }
+
+      // Check if user was created successfully
+      if (!data.user) {
+        throw new Error('User creation failed');
+      }
+
+      // Insert user data into the profiles table
+      const { error: insertError } = await supabase
+        .from('users')
+        .insert([
+          { 
+            user_id: data.user.id, 
+            user_name: name.trim(), 
+            user_email: email.trim() 
+          }
+        ]);
+
+      if (insertError) {
+        throw insertError;
+      }
+
+      Alert.alert('Success', 'Account created successfully', [{ 
+        text: 'OK', 
+        onPress: () => navigation.navigate('Login') 
+      }]);
+    } catch (error) {
+      Alert.alert('Error', error.message || 'An unexpected error occurred', [{ text: 'OK' }]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -87,7 +142,6 @@ export default function SignUp() {
             activeOutlineColor="#1a4056"
             mode="outlined"
           />
-          {errors.name && <Text style={styles.error}>{errors.name}</Text>}
 
           {/* Email Input */}
           <Text style={styles.label}>Email</Text>
@@ -102,7 +156,6 @@ export default function SignUp() {
             activeOutlineColor="#1a4056"
             mode="outlined"
           />
-          {errors.email && <Text style={styles.error}>{errors.email}</Text>}
 
           {/* Password Input */}
           <Text style={styles.label}>Password</Text>
@@ -123,7 +176,6 @@ export default function SignUp() {
               />
             }
           />
-          {errors.password && <Text style={styles.error}>{errors.password}</Text>}
 
           {/* Confirm Password Input */}
           <Text style={styles.label}>Confirm Password</Text>
@@ -144,13 +196,12 @@ export default function SignUp() {
               />
             }
           />
-          {errors.confirmPassword && <Text style={styles.error}>{errors.confirmPassword}</Text>}
 
           {/* Terms and Conditions Checkbox and Link to Modal */}
           <View style={styles.checkboxContainer}>
             <Checkbox
               status={termsAccepted ? "checked" : "unchecked"}
-              onPress={() => setTermsAccepted(!termsAccepted)}
+              onPress={() => setModalVisible(true)}
               color="#1a4056"
             />
             <Text style={styles.checkboxText}>
@@ -162,13 +213,27 @@ export default function SignUp() {
           </View>
 
           {/* Sign Up Button */}
-          <Button loading={loading} mode="contained" onPress={register} disabled={!termsAccepted} style={styles.button} contentStyle={styles.buttonContent}>Sign Up</Button>
-          {errors.general && <Text style={styles.error}>{errors.general}</Text>}
+          <Button 
+            loading={loading} 
+            mode="contained" 
+            onPress={register} 
+            disabled={!termsAccepted} 
+            style={styles.button} 
+            contentStyle={styles.buttonContent}
+          >
+            Sign Up
+          </Button>
 
           {/* Already have an account? Login Link */}
           <View style={styles.loginContainer}>
             <Text style={styles.loginText}>Already have an account?</Text>
-            <Button mode="text" style={styles.loginButton} onPress={() => navigation.navigate("Login")}>Log In</Button>
+            <Button 
+              mode="text" 
+              style={styles.loginButton} 
+              onPress={() => navigation.navigate("Login")}
+            >
+              Log In
+            </Button>
           </View>
         </View>
 
@@ -234,9 +299,5 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     marginLeft: 5,
-  },
-  error: {
-    color: 'red',
-    marginBottom: 10,
   },
 });
