@@ -70,7 +70,7 @@ export default function NavBar() {
                 />
               </TouchableOpacity>
 
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => handleNavigation("LofiMusicScreen")}>
                 <Image
                   source={require("../../../assets/music.png")}
                   style={styles.icon}

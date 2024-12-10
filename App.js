@@ -10,6 +10,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import Home from "./src/components/screens/home/home";
 import TaskScheduler from "./src/components/taskScheduler/taskScheduler";
 import Pomodoro from "./src/components/components/pomodoro/pomodoro";
+import LofiMusicScreen from "./src/components/components/spotify/LofiMusicScreen";
 
 const Stack = createStackNavigator();
 
@@ -43,6 +44,7 @@ export default function App() {
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="TaskScheduler" component={TaskScheduler} />
           <Stack.Screen name="Pomodoro" component={Pomodoro} />
+          <Stack.Screen name="LofiMusicScreen" component={LofiMusicScreen} />
         </Stack.Navigator>
       </NavigationContainer>
       <StatusBar />
