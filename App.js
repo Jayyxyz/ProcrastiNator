@@ -11,6 +11,8 @@ import Home from "./src/components/screens/home/home";
 import TaskScheduler from "./src/components/taskScheduler/taskScheduler";
 import Pomodoro from "./src/components/components/pomodoro/pomodoro";
 import LofiMusicScreen from "./src/components/components/spotify/LofiMusicScreen";
+import FlashcardsScreen from "./src/components/components/flashcards/FlashcardsScreen";
+import CohereChatScreen from "./src/components/components/chatgpt/cohereChatScreen";
 
 const Stack = createStackNavigator();
 
@@ -26,7 +28,7 @@ export default function App() {
     return (
       <SafeAreaProvider>
         <SafeAreaView style={styles.container}>
-        <View >
+        <View style={styles.container} >
           <LoadingScreen />
         </View>
         </SafeAreaView>
@@ -45,6 +47,8 @@ export default function App() {
           <Stack.Screen name="TaskScheduler" component={TaskScheduler} />
           <Stack.Screen name="Pomodoro" component={Pomodoro} />
           <Stack.Screen name="LofiMusicScreen" component={LofiMusicScreen} />
+          <Stack.Screen name="Flashcards" component={FlashcardsScreen} />
+          <Stack.Screen name="CohereChatScreen" component={CohereChatScreen} />
         </Stack.Navigator>
       </NavigationContainer>
       <StatusBar />

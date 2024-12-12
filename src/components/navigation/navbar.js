@@ -42,14 +42,14 @@ export default function NavBar() {
                 />
               </TouchableOpacity>
 
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => handleNavigation("Flashcards")}>
                 <Image
                   source={require("../../../assets/flashcards.png")}
                   style={styles.icon}
                 />
               </TouchableOpacity>
 
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => handleNavigation("CohereChatScreen")}>
                 <Image
                   source={require("../../../assets/ai.png")}
                   style={styles.icon}
