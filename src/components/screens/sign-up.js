@@ -4,6 +4,7 @@ import { TextInput, Button, Text, Checkbox, Provider as PaperProvider } from "re
 import { useNavigation } from "@react-navigation/native";
 import TermsAndConditionsModal from "./terms-and-condition.Modal";
 import { supabase } from "../../services/supabase";
+import Toast from "../notification/toast";
 
 export default function SignUp() {
   const navigation = useNavigation();
@@ -15,46 +16,53 @@ export default function SignUp() {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [toastVisible, setToastVisible] = useState(false); // Toast visibility
+  const [toastMessage, setToastMessage] = useState(""); // Toast message
+
+  const showToast = (message) => {
+    setToastMessage(message);
+    setToastVisible(true);
+  };
 
   // Comprehensive validation function with alerts
   const validateForm = () => {
     // Name validation
     if (!name.trim()) {
-      Alert.alert('Error', 'Name is required');
+      showToast('Name is required');
       return false;
     }
 
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email.trim()) {
-      Alert.alert('Error', 'Email is required');
+      showToast('Email is required');
       return false;
     } else if (!emailRegex.test(email)) {
-      Alert.alert('Error', 'Invalid email format');
+      showToast('Invalid email format');
       return false;
     }
 
     // Password validation
     if (!password) {
-      Alert.alert('Error', 'Password is required');
+      showToast('Password is required');
       return false;
     } else if (password.length < 4) {
-      Alert.alert('Error', 'Password must be at least 4 characters long');
+      showToast('Password must be at least 4 characters long');
       return false;
     }
 
     // Confirm password validation
     if (!confirmPassword) {
-      Alert.alert('Error', 'Please confirm your password');
+      showToast('Please confirm your password');
       return false;
     } else if (password !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match');
+      showToast('Passwords do not match');
       return false;
     }
 
     // Terms and conditions
     if (!termsAccepted) {
-      Alert.alert('Error', 'You must accept the terms and conditions');
+      showToast('You must accept the terms and conditions');
       return false;
     }
 
@@ -125,6 +133,7 @@ export default function SignUp() {
 
   return (
     <PaperProvider>
+      <Toast visible={toastVisible} message={toastMessage} onDismiss={() => setToastVisible(false)} />
       <View style={styles.container}>
         {/* Sign Up Title */}
         <Text style={styles.title}>Sign Up</Text>

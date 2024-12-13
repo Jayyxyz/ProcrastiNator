@@ -3,6 +3,7 @@ import { View, StyleSheet, Alert, Image } from "react-native";
 import { TextInput, Button, Text, Checkbox, Provider as PaperProvider, ActivityIndicator } from "react-native-paper";
 import { useNavigation, CommonActions } from "@react-navigation/native";
 import { supabase } from "../../services/supabase";
+import Toast from "../notification/toast";
 
 export default function Login() {
   const navigation = useNavigation();
@@ -10,17 +11,23 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false); // Loading state
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+
+
+  const showToast = (message) => {
+    setToastMessage(message);
+    setToastVisible(true);
+  };
 
   const login = async () => {
     try {
       setLoading(true);
 
-      if (!email) {
-        throw new Error('Email is required');
-      }
-
-      if (!password) {
-        throw new Error('Password is required');
+      
+      if (!email || !password) {
+        showToast("Email and Password are required!");
+        return;
       }
 
       const { error } = await supabase.auth.signInWithPassword({
@@ -69,6 +76,7 @@ export default function Login() {
     <PaperProvider>
       <View style={styles.container}>
         <Image source={require('../../../assets/Logo.png')} style={styles.logo} />
+        <Toast visible={toastVisible} message={toastMessage} onDismiss={() => setToastVisible(false)} />
         
         {loading ? ( // Show loading spinner if loading state is true
           <View style={styles.loadingContainer}>

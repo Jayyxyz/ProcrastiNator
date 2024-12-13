@@ -20,7 +20,7 @@ export default function NavBar() {
     <View style={styles.navContainer}>
       <View style={styles.IconButton}>
         <IconButton icon="shield-off" size={30} />
-        <IconButton icon="dots-horizontal" size={30} />
+        <IconButton icon="dots-horizontal" size={30}  onPress={() => handleNavigation("Logout")}/>
       </View>
 
       <View style={styles.widgets}>
