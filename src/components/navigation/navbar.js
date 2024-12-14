@@ -20,7 +20,7 @@ export default function NavBar() {
     <View style={styles.navContainer}>
       <View style={styles.IconButton}>
         <IconButton icon="shield-off" size={30} />
-        <IconButton icon="dots-horizontal" size={30} />
+        <IconButton icon="dots-horizontal" size={30}  onPress={() => handleNavigation("Logout")}/>
       </View>
 
       <View style={styles.widgets}>
@@ -42,14 +42,14 @@ export default function NavBar() {
                 />
               </TouchableOpacity>
 
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => handleNavigation("Flashcards")}>
                 <Image
                   source={require("../../../assets/flashcards.png")}
                   style={styles.icon}
                 />
               </TouchableOpacity>
 
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => handleNavigation("CohereChatScreen")}>
                 <Image
                   source={require("../../../assets/ai.png")}
                   style={styles.icon}

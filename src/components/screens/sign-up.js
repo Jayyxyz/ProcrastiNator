@@ -1,45 +1,139 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Alert } from "react-native";
-import {
-  TextInput,
-  Button,
-  Text,
-  Checkbox,
-  Provider as PaperProvider,
-} from "react-native-paper";
+import { TextInput, Button, Text, Checkbox, Provider as PaperProvider } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
-import TermsAndConditionsModal from "./terms-and-condition.Modal";// Import the modal
+import TermsAndConditionsModal from "./terms-and-condition.Modal";
+import { supabase } from "../../services/supabase";
+import Toast from "../notification/toast";
 
 export default function SignUp() {
   const navigation = useNavigation();
-  
-  // State for handling user input
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false); // State for modal visibility
+  const [modalVisible, setModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [toastVisible, setToastVisible] = useState(false); // Toast visibility
+  const [toastMessage, setToastMessage] = useState(""); // Toast message
 
-  // Placeholder function for handling sign up - add backend logic here later
-  const handleSignUp = () => {
-    if (password !== confirmPassword) {
-      Alert.alert("Error", "Passwords do not match");
-      return;
-    }
-
-    // Placeholder feedback for now
-    Alert.alert("Sign up attempted", `Name: ${name}, Email: ${email}`);
+  const showToast = (message) => {
+    setToastMessage(message);
+    setToastVisible(true);
   };
 
+  // Comprehensive validation function with alerts
+  const validateForm = () => {
+    // Name validation
+    if (!name.trim()) {
+      showToast('Name is required');
+      return false;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email.trim()) {
+      showToast('Email is required');
+      return false;
+    } else if (!emailRegex.test(email)) {
+      showToast('Invalid email format');
+      return false;
+    }
+
+    // Password validation
+    if (!password) {
+      showToast('Password is required');
+      return false;
+    } else if (password.length < 4) {
+      showToast('Password must be at least 4 characters long');
+      return false;
+    }
+
+    // Confirm password validation
+    if (!confirmPassword) {
+      showToast('Please confirm your password');
+      return false;
+    } else if (password !== confirmPassword) {
+      showToast('Passwords do not match');
+      return false;
+    }
+
+    // Terms and conditions
+    if (!termsAccepted) {
+      showToast('You must accept the terms and conditions');
+      return false;
+    }
+
+    return true;
+  };
+
+  // Handle accepting terms and conditions
   const handleAcceptTerms = () => {
     setTermsAccepted(true);
     setModalVisible(false);
   };
 
+  // Registration logic
+  const register = async () => {
+    // Validate form before submission
+    if (!validateForm()) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      // Sign up the user
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { 
+            display_name: name.trim() 
+          }
+        }
+      });
+
+      if (signUpError) {
+        throw signUpError;
+      }
+
+      // Check if user was created successfully
+      if (!data.user) {
+        throw new Error('User creation failed');
+      }
+
+      // Insert user data into the profiles table
+      const { error: insertError } = await supabase
+        .from('users')
+        .insert([
+          { 
+            user_id: data.user.id, 
+            user_name: name.trim(), 
+            user_email: email.trim() 
+          }
+        ]);
+
+      if (insertError) {
+        throw insertError;
+      }
+
+      Alert.alert('Success', 'Account created successfully', [{ 
+        text: 'OK', 
+        onPress: () => navigation.navigate('Login') 
+      }]);
+    } catch (error) {
+      Alert.alert('Error', error.message || 'An unexpected error occurred', [{ text: 'OK' }]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <PaperProvider>
+      <Toast visible={toastVisible} message={toastMessage} onDismiss={() => setToastVisible(false)} />
       <View style={styles.container}>
         {/* Sign Up Title */}
         <Text style={styles.title}>Sign Up</Text>
@@ -116,7 +210,7 @@ export default function SignUp() {
           <View style={styles.checkboxContainer}>
             <Checkbox
               status={termsAccepted ? "checked" : "unchecked"}
-              onPress={() => setTermsAccepted(!termsAccepted)}
+              onPress={() => setModalVisible(true)}
               color="#1a4056"
             />
             <Text style={styles.checkboxText}>
@@ -128,11 +222,12 @@ export default function SignUp() {
           </View>
 
           {/* Sign Up Button */}
-          <Button
-            mode="contained"
-            onPress={handleSignUp}
-            disabled={!termsAccepted} // Disable button if terms not accepted
-            style={styles.button}
+          <Button 
+            loading={loading} 
+            mode="contained" 
+            onPress={register} 
+            disabled={!termsAccepted} 
+            style={styles.button} 
             contentStyle={styles.buttonContent}
           >
             Sign Up
@@ -141,7 +236,11 @@ export default function SignUp() {
           {/* Already have an account? Login Link */}
           <View style={styles.loginContainer}>
             <Text style={styles.loginText}>Already have an account?</Text>
-            <Button mode="text" style={styles.loginButton} onPress={() => navigation.navigate("Login")}>
+            <Button 
+              mode="text" 
+              style={styles.loginButton} 
+              onPress={() => navigation.navigate("Login")}
+            >
               Log In
             </Button>
           </View>

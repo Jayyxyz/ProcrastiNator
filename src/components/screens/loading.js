@@ -1,38 +1,49 @@
 import React, { useEffect, useRef, useState } from 'react'; 
-import { View, Image, Animated } from 'react-native';
-import styles from './loading.styles'; 
+import { View, Image, Animated, StyleSheet } from 'react-native';
 
 const LoadingScreen = () => {
-  const [isVisible, setIsVisible] = useState(true); // State to control visibility
-  const fadeAnim = useRef(new Animated.Value(0)).current; // Animated value for opacity
+  const [isVisible, setIsVisible] = useState(true);
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    Animated.timing(fadeAnim, { // Start fade-in animation
-      toValue: 1, // Target opacity
-      duration: 1500, // Duration for fade-in
-      useNativeDriver: true, // Use native driver for performance
-    }).start(); // Start the animation
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 1500,
+      useNativeDriver: true,
+    }).start();
 
-    const fadeOutTimeout = setTimeout(() => { // Set up fade-out timeout
-      Animated.timing(fadeAnim, { // Start fade-out animation
-        toValue: 0, // Target opacity
-        duration: 1000, // Duration for fade-out
-        useNativeDriver: true, // Use native driver for performance
-      }).start(() => setIsVisible(false)); // Start animation and hide after completion
-    }, 5000); // Wait for 10 seconds before starting fade-out
+    const fadeOutTimeout = setTimeout(() => {
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 1000,
+        useNativeDriver: true,
+      }).start(() => setIsVisible(false));
+    }, 5000);
 
-    return () => clearTimeout(fadeOutTimeout); // Cleanup timeout on unmount
-  }, [fadeAnim]); // Dependency array for useEffect
+    return () => clearTimeout(fadeOutTimeout);
+  }, [fadeAnim]);
 
-  if (!isVisible) return null; // Return null if not visible
+  if (!isVisible) return null;
 
   return (
     <View style={styles.container}>
-      <Animated.View style={{ opacity: fadeAnim }}>
+      <Animated.View style={{ opacity: fadeAnim, alignItems: 'center', justifyContent: 'center' }}>
         <Image source={require('../../../assets/Logo.png')} style={styles.logo} />
       </Animated.View>
     </View>
   );
 };
 
-export default LoadingScreen; // Export the component
+const styles = StyleSheet.create({ 
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logo: {
+    width: 300,
+    height: 300,
+  },
+});
+
+export default LoadingScreen;
