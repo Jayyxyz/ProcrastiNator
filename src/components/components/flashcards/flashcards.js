@@ -38,24 +38,27 @@ const Flashcard = ({ question, answer }) => {
   return (
     <TouchableWithoutFeedback onPress={flipCard}>
       <View style={styles.container}>
-        <Animated.View
-          style={[
-            styles.card,
-            styles.cardFront,
-            { transform: [{ rotateY: frontInterpolate }] },
-          ]}
-        >
-          <Text style={styles.text}>{question}</Text>
-        </Animated.View>
-        <Animated.View
-          style={[
-            styles.card,
-            styles.cardBack,
-            { transform: [{ rotateY: backInterpolate }] },
-          ]}
-        >
-          <Text style={styles.text}>{answer}</Text>
-        </Animated.View>
+        {/* Stable shadow container */}
+        <View style={styles.shadowWrapper}>
+          <Animated.View
+            style={[
+              styles.card,
+              styles.cardFront,
+              { transform: [{ rotateY: frontInterpolate }] },
+            ]}
+          >
+            <Text style={styles.text}>{question}</Text>
+          </Animated.View>
+          <Animated.View
+            style={[
+              styles.card,
+              styles.cardBack,
+              { transform: [{ rotateY: backInterpolate }] },
+            ]}
+          >
+            <Text style={styles.text}>{answer}</Text>
+          </Animated.View>
+        </View>
       </View>
     </TouchableWithoutFeedback>
   );
@@ -65,7 +68,16 @@ const styles = StyleSheet.create({
   container: {
     height: 200,
     marginVertical: 10,
-    perspective: 1000, // Add perspective for 3D effect
+    perspective: 1000,
+  },
+  shadowWrapper: {
+    flex: 1,
+    borderRadius: 8,
+    shadowColor: "#000", // Shadow color
+    shadowOffset: { width: 0, height: 5 }, // Shadow offset
+    shadowOpacity: 0.3, // Shadow opacity
+    shadowRadius: 10, // Shadow blur radius
+    elevation: 5, // For Android shadow
   },
   card: {
     position: "absolute",
@@ -77,11 +89,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   cardFront: {
-    backgroundColor: "#1e1e1e",
+    backgroundColor: "#054f5f", // Updated
   },
   cardBack: {
-    backgroundColor: "#1db954",
-    transform: [{ rotateY: "180deg" }], // Rotate the back initially
+    backgroundColor: "#056a74", // Updated
+    transform: [{ rotateY: "180deg" }],
   },
   text: {
     color: "#fff",

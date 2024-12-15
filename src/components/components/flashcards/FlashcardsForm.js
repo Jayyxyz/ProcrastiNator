@@ -65,18 +65,21 @@ const FlashcardForm = ({ onFlashcardCreated }) => {
       <TextInput
         style={styles.input}
         placeholder="Set (optional)"
+        placeholderTextColor="#ccc"  // Grey placeholder text
         value={set}
         onChangeText={setSet}
       />
       <TextInput
         style={styles.input}
         placeholder="Question"
+        placeholderTextColor="#ccc"  // Grey placeholder text
         value={question}
         onChangeText={setQuestion}
       />
       <TextInput
         style={styles.input}
         placeholder="Answer"
+        placeholderTextColor="#ccc"  // Grey placeholder text
         value={answer}
         onChangeText={setAnswer}
       />
@@ -94,25 +97,28 @@ const FlashcardForm = ({ onFlashcardCreated }) => {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: "#121212",
+    backgroundColor: "#054f5f", // Updated
   },
   input: {
-    borderWidth: 1,
+    borderWidth: 1, // Thinner border for input fields
     borderColor: "#ccc",
     borderRadius: 8,
     padding: 10,
     marginBottom: 15,
-    color: "#fff",
-    backgroundColor: "#1e1e1e",
+    color: "#fff",  // White text color
+    backgroundColor: "#056a74", // Updated
   },
   button: {
-    backgroundColor: "#1db954",
     padding: 15,
     borderRadius: 8,
+    borderWidth: 1, // Thinner border for the button
+    borderColor: "#054f5f", // Border color matching the background color
+    backgroundColor: "#fff", // White background for the button
     alignItems: "center",
+    marginTop: 20,
   },
   buttonText: {
-    color: "#fff",
+    color: "#054f5f", // Text color matching the palette
     fontSize: 16,
     fontWeight: "bold",
   },
